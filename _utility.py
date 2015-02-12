@@ -48,13 +48,14 @@ def strech_factor(Graph1,Graph2):
         taken over all possible pair of vertices"""
     Matrix1 = floyd(Graph1);
     Matrix2 = floyd(Graph2);
-    nodes=len(Graph.node)
+    nodes=len(Graph1.node)
     #Rho contains small value initially
     rho = 0
     for i in range(0,nodes):
         for j in range(0,nodes):
-            if i!=j and rho<Matrix1[i][j]/Matrix2[i][j]:
+            if i!=j and rho < Matrix1[i][j]/Matrix2[i][j]:
                 rho = Matrix1[i][j]/Matrix2[i][j]
+    return rho
 
 def floyd(Graph):
     """This solves All pair shortest path length using basc algorthm"""
@@ -89,16 +90,17 @@ def cone_based_topology_control(Graph):
     pass
     
 
-def relative_neighbor_topology_control(Graph):
+def relative_neighbor_topology_control(Graph_input):
     """This algorithm utilises distance functionality to eliminate relative nodes. A scan through each edges is done and common neighbor
         is found, conditioned is applied and if it satisfies, edge is added to removal list(dynamic deletion is not possible with iterators)"""
-    
+    Graph = Graph_input.copy()
     removal_list=[]
     for e in Graph.edges_iter():
         node1=e[0]
         node2=e[1]
         node1_neighbors = Graph.neighbors(node1)
         node2_neighbors = Graph.neighbors(node2)
+        #a node is considered connected to itself
         if node1!=node2:
             for n in node1_neighbors:
                 #TODO(bulletcross@gmail.com):Use add_attribute funtion
@@ -114,6 +116,7 @@ def relative_neighbor_topology_control(Graph):
                 removal_list.append(e)
     for e in removal_list:
         Graph.remove_edge(*e)
+        
     return Graph
 
 def delauncy_triangulation_topology_control(Graph):

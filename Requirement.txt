@@ -1,0 +1,14 @@
+Deploy n (input) sensors randomly with communication range r (input) in a
+rectangular of sides a & b (inputs) such that underlaying graph is
+connected.
+
+Apply following following topology control algorithms to compare
+performance of the algorithms in terms of "stretch factor".
+
+1. Cone based topology control (CBTC) (angle is input parameter)
+2. Delaunay based Topology Control
+3. Relative neighbor Topology Control
+
+Draw input connected graph and output of above three algorithms.
+
+Use any suitable language for implementation.

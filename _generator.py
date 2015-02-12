@@ -33,7 +33,7 @@ class Connected(GraphGenerator):
     def generate_graph(self):
         #Generating initial position
         G=net.Graph()
-        node_list= range(2,self.nodes)
+        node_list= range(2,self.nodes+1)
         rnd.shuffle(node_list)
         x_coord=rnd.randint(0,self.a)
         y_coord=rnd.randint(0,self.b)
@@ -59,16 +59,15 @@ class Connected(GraphGenerator):
             for j in G.node:
                 if ut.distance(G.node[j]['x'],G.node[j]['y'],random_x,random_y)<self.radius:
                     G.add_edge(i,j)
+        #TODO(bulletcross@gmail.com):Fix this function
+        #Adding edge weight to each edge in the graph
+        #for e in G.edges_iter():
+        #    ut.add_attribute_to_edge(G,e[0],e[1],'w',ut.distance(G.node[e[0]]['x'],G.node[e[0]]['y'],G.node[e[1]]['x'],G.node[e[1]]['y']))
         return G
 
 class Random(GraphGenerator):
     """This class inherits from Graph generator and provides the funtionality of
         creating a random graph"""
-    def __init__(self, nodes, radius, a, b):
-        self.nodes=nodes
-        self.radius=radius
-        self.a=a
-        self.b=b
         
     def generate_graph(self):
         #TODO(bulletcross@gmail.com): Complete this function

@@ -14,7 +14,7 @@ def display_graph(G):
 def generate_graph(nodes,radius,a,b):
     #Generating initial position
     G=net.Graph()
-    node_list= range(2,nodes)
+    node_list= range(2,nodes+1)
     rnd.shuffle(node_list)
     x_coord=rnd.randint(0,a)
     y_coord=rnd.randint(0,b)

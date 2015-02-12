@@ -59,7 +59,6 @@ def find_block(angle):
         return 0
 
 
-
 def strech_factor(Graph1,Graph2):
     """ Strech factor is the maximum ratio minimum weight path over Graph1/Graph2
         taken over all possible pair of vertices"""
@@ -104,8 +103,11 @@ def add_attribute_to_edge(H,id_node_source,id_node_target,new_attr,value_attr):
 #TODO (bulletcross@gmail.com): Implement the algorithm and check strech factor
 
 def cone_based_topology_control(Graph_input):
-    """No documentation yet"""
+    """The Algorithm works as follow: it scans each nodes one after another. For each node,its neighbours are considered
+        and area is diveded into six parts(alpha=pi/3). Nodes which are reachable with least power in each cone are
+        connected under the constraint graph remains connected."""
     Graph = Graph_input.copy()
+    verified_edges=[]
     for nd in Graph.nodes_iter():
         block = [0 for i in range(6)]
         node_neighbors = Graph.neighbors(nd)
@@ -113,16 +115,30 @@ def cone_based_topology_control(Graph_input):
             if nd!=n:
                 angle = math.asin((Graph.node[n]['y']-Graph.node[nd]['y'])/distance(Graph.node[n]['x'],Graph.node[n]['y'],Graph.node[nd]['x'],Graph.node[nd]['y']))
                 block_index = find_block(angle)
-                if block[block_index]==0:
+                if ((nd,n) in verified_edges) or ((n,nd) in verified_edges):
                     block[block_index]=n
+                elif block[block_index]==0:
+                    block[block_index]=n
+                elif ((nd,block[block_index]) in verified_edges) or ((block[block_index],nd) in verified_edges):
+                    pass
                 else:
                     d_old = distance(Graph.node[nd]['x'],Graph.node[nd]['y'],Graph.node[block[block_index]]['x'],Graph.node[block[block_index]]['y'])
                     d_new = distance(Graph.node[nd]['x'],Graph.node[nd]['y'],Graph.node[n]['x'],Graph.node[n]['y'])
                     if d_old < d_new:
                         Graph.remove_edge(nd,n)
+                        if not net.is_connected(Graph):
+                            Graph.add_edge(nd,n)
                     else:
                         Graph.remove_edge(nd,block[block_index])
-                        block[block_index] = n
+                        if not net.is_connected(Graph):
+                            Graph.add_edge(nd,block[block_index])
+                        else:
+                            block[block_index] = n
+        for nds in block:
+            if (nd,nds) not in verified_edges:
+                verified_edges.append((nd,nds))
+            if (nds,nd) not in verified_edges:
+                verified_edges.append((nds,nd))
     return Graph
     
 

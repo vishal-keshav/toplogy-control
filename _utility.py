@@ -41,6 +41,23 @@ def maximum(a,b):
     else:
         return a
 
+def find_block(angle):
+    """This is used by cone based topology control algorithm"""
+    if angle>=(-1)*math.pi and angle < (-2.0/3.0)*math.pi:
+        return 0
+    elif angle>=(-2.0/3.0)*math.pi and angle < (-1.0/3.0)*math.pi:
+        return 1
+    elif angle>=(-1.0/3.0)*math.pi and angle < (0)*math.pi:
+        return 2
+    elif angle>=(0)*math.pi and angle < (1.0/3.0)*math.pi:
+        return 3
+    elif angle>=(1.0/3.0)*math.pi and angle < (2.0/3.0)*math.pi:
+        return 4
+    elif angle>=(2.0/3.0)*math.pi and angle < (1)*math.pi:
+        return 5
+    else:
+        return 0
+
 
 
 def strech_factor(Graph1,Graph2):
@@ -75,7 +92,7 @@ def floyd(Graph):
                 M[i][j] = minimum(M[i][j],M[i][k]+M[k][j])
     return M
 
-#Add_attribute function is contribution of Stefano C.
+#Add_attribute function is a contribution from Stefano C.
 def add_attribute_to_edge(H,id_node_source,id_node_target,new_attr,value_attr):
     keydict =H[id_node_source][id_node_target]
     key=len(keydict)
@@ -86,8 +103,27 @@ def add_attribute_to_edge(H,id_node_source,id_node_target,new_attr,value_attr):
 """Topology control algorithm implementation"""
 #TODO (bulletcross@gmail.com): Implement the algorithm and check strech factor
 
-def cone_based_topology_control(Graph):
-    pass
+def cone_based_topology_control(Graph_input):
+    """No documentation yet"""
+    Graph = Graph_input.copy()
+    for nd in Graph.nodes_iter():
+        block = [0 for i in range(6)]
+        node_neighbors = Graph.neighbors(nd)
+        for n in node_neighbors:
+            if nd!=n:
+                angle = math.asin((Graph.node[n]['y']-Graph.node[nd]['y'])/distance(Graph.node[n]['x'],Graph.node[n]['y'],Graph.node[nd]['x'],Graph.node[nd]['y']))
+                block_index = find_block(angle)
+                if block[block_index]==0:
+                    block[block_index]=n
+                else:
+                    d_old = distance(Graph.node[nd]['x'],Graph.node[nd]['y'],Graph.node[block[block_index]]['x'],Graph.node[block[block_index]]['y'])
+                    d_new = distance(Graph.node[nd]['x'],Graph.node[nd]['y'],Graph.node[n]['x'],Graph.node[n]['y'])
+                    if d_old < d_new:
+                        Graph.remove_edge(nd,n)
+                    else:
+                        Graph.remove_edge(nd,block[block_index])
+                        block[block_index] = n
+    return Graph
     
 
 def relative_neighbor_topology_control(Graph_input):

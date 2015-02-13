@@ -31,9 +31,8 @@ def main():
     ut.plot_graph(G2)
 
     print G2.number_of_edges()
-    G3 = ut.cone_based_topology_control(G2)
+    G3 = ut.delauncy_triangulation_topology_control(G2)
     print G3.number_of_edges()
-    print net.is_connected(G3)
     ut.plot_graph(G3)
     rho = ut.strech_factor(G3,G2)
     print rho

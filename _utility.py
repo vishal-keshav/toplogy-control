@@ -5,12 +5,13 @@
 """This file contains utility functions including following topology control algorithms
     1. Cone based
     2. Relative Neighbouring
-    3. Delauncy triangulation
+    3. Delaunay triangulation
 
     Utility function includes computaions of strech factor which in turn uses
     Floyed Warshall All pair shortest path Algorithm"""
 import math
 import networkx as net
+import delaunay as dl
 from matplotlib import pyplot as plt
 
 def plot_graph(Graph):
@@ -41,6 +42,7 @@ def maximum(a,b):
     else:
         return a
 
+#TODO(bulletcross@gmail.com): Disable hardcoding with variable alpha
 def find_block(angle):
     """This is used by cone based topology control algorithm"""
     if angle>=(-1)*math.pi and angle < (-2.0/3.0)*math.pi:
@@ -100,7 +102,6 @@ def add_attribute_to_edge(H,id_node_source,id_node_target,new_attr,value_attr):
             H.add_edge(id_node_source,id_node_target,key=k, new_attr= value_attr)
 
 """Topology control algorithm implementation"""
-#TODO (bulletcross@gmail.com): Implement the algorithm and check strech factor
 
 def cone_based_topology_control(Graph_input):
     """The Algorithm works as follow: it scans each nodes one after another. For each node,its neighbours are considered
@@ -167,9 +168,25 @@ def relative_neighbor_topology_control(Graph_input):
             if toggle:
                 removal_list.append(e)
     for e in removal_list:
-        Graph.remove_edge(*e)
-        
+        Graph.remove_edge(*e)        
     return Graph
 
-def delauncy_triangulation_topology_control(Graph):
-    pass
+def delauncy_triangulation_topology_control(Graph_input):
+    """This uses the inbulit library to for Delauny triangulation out of the node
+        given in the Graph_input. Gelaunay graph along with Graph_input is compared
+        to find the possibility of existance of an edge in original graph such that
+        Graph remains connected"""
+    Graph = Graph_input.copy()
+    DGraph = dl.createTINgraph(Graph)
+    #Incrementing node label by one
+    mapping = {}
+    for i in range(len(DGraph.node)):
+        mapping[i]=i+1
+    DGraph=net.relabel_nodes(DGraph,mapping)
+    #Removing edges from original graph which are not the part of delaunay triangulation
+    for e in Graph_input.edges_iter():
+        if e not in DGraph.edge:
+            Graph.remove_edge(*e)
+            if not net.is_connected(Graph):
+                Graph.add_edge(*e)
+    return Graph

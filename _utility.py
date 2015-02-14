@@ -1,6 +1,5 @@
 # Author:Vishal Keshav, Email:bulletcross@gmail.com
 # Libraries and Modules has been used under Open Source Agreement
-# Please confirm before distribution
 
 """This file contains utility functions including following topology control algorithms
     1. Cone based
@@ -14,14 +13,17 @@ import networkx as net
 import delaunay as dl
 from matplotlib import pyplot as plt
 
-def plot_graph(Graph):
+def plot_graph(Graph,filename):
     """Uses matplotlib funtionality to plot graph"""
     #Creating Dictionary for positioning
     pos={}
     for n in Graph:
         pos[n]=(Graph.node[n]['x'],Graph.node[n]['y'])
-    net.draw(Graph,pos)
-    # TODO (bulletcross@gmail.com):Make Graph more apealing
+    net.draw_networkx_edges(Graph,pos,alpha=0.4)
+    net.draw_networkx_nodes(Graph,pos,
+                       node_size=80,
+                       cmap=plt.cm.Reds_r)
+    plt.savefig(filename+'.png')
     plt.show()
 
 def distance(x1,y1,x2,y2):
@@ -42,7 +44,6 @@ def maximum(a,b):
     else:
         return a
 
-#TODO(bulletcross@gmail.com): Disable hardcoding with variable alpha
 def find_block(angle):
     """This is used by cone based topology control algorithm"""
     if angle>=(-1)*math.pi and angle < (-2.0/3.0)*math.pi:
@@ -92,14 +93,6 @@ def floyd(Graph):
             for j in Range:
                 M[i][j] = minimum(M[i][j],M[i][k]+M[k][j])
     return M
-
-#Add_attribute function is a contribution from Stefano C.
-def add_attribute_to_edge(H,id_node_source,id_node_target,new_attr,value_attr):
-    keydict =H[id_node_source][id_node_target]
-    key=len(keydict)
-    for k in keydict:
-        if 'type' not in H.edge[id_source][id_target][k]:
-            H.add_edge(id_node_source,id_node_target,key=k, new_attr= value_attr)
 
 """Topology control algorithm implementation"""
 
@@ -156,7 +149,6 @@ def relative_neighbor_topology_control(Graph_input):
         #a node is considered connected to itself
         if node1!=node2:
             for n in node1_neighbors:
-                #TODO(bulletcross@gmail.com):Use add_attribute funtion
                 d1=distance(Graph.node[node1]['x'],Graph.node[node1]['y'],Graph.node[n]['x'],Graph.node[n]['y'])
                 d2=distance(Graph.node[n]['x'],Graph.node[n]['y'],Graph.node[node2]['x'],Graph.node[node2]['y'])
                 d12=distance(Graph.node[node1]['x'],Graph.node[node1]['y'],Graph.node[node2]['x'],Graph.node[node2]['y'])
@@ -171,7 +163,7 @@ def relative_neighbor_topology_control(Graph_input):
         Graph.remove_edge(*e)        
     return Graph
 
-def delauncy_triangulation_topology_control(Graph_input):
+def delaunay_triangulation_topology_control(Graph_input):
     """This uses the inbulit library to for Delauny triangulation out of the node
         given in the Graph_input. Gelaunay graph along with Graph_input is compared
         to find the possibility of existance of an edge in original graph such that

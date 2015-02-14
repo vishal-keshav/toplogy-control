@@ -1,0 +1,17 @@
+-------Output for Relative neighbor topology control algorithm-------
+Edges in original graph - 245
+Egdes after RNG Algorithm - 127
+Strech factor - 2.09382831021
+Graph has been generated in the file named RNG.png
+
+-------Output for Cone based topology control algorithm-------
+Edges in original graph - 245
+Egdes after Cone based Algorithm - 154
+Strech factor - 6.72737780806
+Graph has been generated in the file named Cone.png
+
+-------Output for Delaunay triangulation topology control algorithm-------
+Edges in original graph - 245
+Egdes after Delaunay Algorithm - 49
+Strech factor - 35.4428625765
+Graph has been generated in the file named Delaunay.png

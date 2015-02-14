@@ -1,6 +1,5 @@
 #Author: Vishal Keshav, Email:bulletcross@gmail.com
-#Copyright notice: this is an improvement of version provided by Yury V. Rayabov(riabovvv@gmail.com)
-#Verify authors before distribution
+#Copyright notice: this is an improved of version provided by Yury V. Rayabov(riabovvv@gmail.com)
 
 import networkx as nx
 import scipy.spatial

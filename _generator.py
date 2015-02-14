@@ -1,6 +1,5 @@
 # Author:Vishal Keshav, Email:bulletcross@gmail.com
 # Libraries and Modules has been used under Open Source Agreement
-# Please confirm before distribution
 
 import random as rnd
 import networkx as net
@@ -70,5 +69,4 @@ class Random(GraphGenerator):
         creating a random graph"""
         
     def generate_graph(self):
-        #TODO(bulletcross@gmail.com): Complete this function
         pass
